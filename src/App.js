@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <h1 className="flex text-3xl font-bold underline justify-center">
-        Weight Tracker
+        Weight Tracke
       </h1>
       <div className = "flex justify-center">
         <ReportWeight />
