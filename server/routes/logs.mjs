@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Get a list of 50 posts
 router.get("/", async (req, res) => {
-  let collection = await db.collection("posts");
+  let collection = await db.collection("logs");
   let results = await collection.find({})
     .limit(50)
     .toArray();
@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
 
 // Add a new document to the collection
 router.post("/", async (req, res) => {
-  let collection = await db.collection("posts");
+  let collection = await db.collection("logs");
   let newDocument = req.body;
   let result = await collection.insertOne(newDocument);
   res.send(result).status(204);
