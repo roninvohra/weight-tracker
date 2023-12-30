@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useDispatch } from 'react-redux';
+import { triggerEffect } from '../store/actions';
 
 function ReportWeight() {
   const [weight, setWeight] = useState('');
   const [date, setDate] = useState(new Date());
+  const dispatch = useDispatch();
 
   let onButtonClick = async () => {
 
     try {
-
       console.log (date);
       let postData = {
         "weight": weight,
@@ -27,6 +29,7 @@ function ReportWeight() {
         throw new Error('Network response was not ok');
       }
       const responseData = await response.json();
+      dispatch(triggerEffect());
       console.log(responseData);
     } catch (error) {
       console.error('Error during POST request:', error);
