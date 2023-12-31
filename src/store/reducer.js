@@ -1,6 +1,6 @@
 // reducer.js
 const initialState = {
-    effectTriggered: false,
+    effectTriggered: true,
   };
   
   const rootReducer = (state = initialState, action) => {
@@ -9,6 +9,11 @@ const initialState = {
         return {
           ...state,
           effectTriggered: true,
+        };
+    case 'RESET_EFFECT':
+        return {
+            ...state,
+            effectTriggered: false,
         };
       default:
         return state;

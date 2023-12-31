@@ -4,4 +4,11 @@ export const triggerEffect = () => {
       type: 'TRIGGER_EFFECT',
     };
   };
+
+export const resetEffect = () => {
+return {
+    type: 'RESET_EFFECT',
+};
+};
+  
   

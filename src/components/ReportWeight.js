@@ -7,6 +7,7 @@ import { triggerEffect } from '../store/actions';
 function ReportWeight() {
   const [weight, setWeight] = useState('');
   const [date, setDate] = useState(new Date());
+  const [unit, setUnit] = useState ('lbs');
   const dispatch = useDispatch();
 
   let onButtonClick = async () => {
@@ -16,6 +17,7 @@ function ReportWeight() {
       let postData = {
         "weight": weight,
         "date": date,
+        "unit": unit,
       }
       const response = await fetch('http://localhost:5050/logs', {
         method: 'POST',
@@ -30,6 +32,7 @@ function ReportWeight() {
       }
       const responseData = await response.json();
       dispatch(triggerEffect());
+      console.log ("DISPATCHED");
       console.log(responseData);
     } catch (error) {
       console.error('Error during POST request:', error);
@@ -43,6 +46,10 @@ function ReportWeight() {
         Date: <DatePicker selected={date} showTimeSelect onChange={(date) => setDate(date) } />
       </span>
       <input onChange = {e => setWeight(e.target.value)} placeholder="Weight" className = 'mr-5 border rounded shadow-md w-20 h-10' type ="text" name = "weight" />  
+      <select id = "unit" onChange = {e => setUnit(e.target.value)}>
+          <option value = "lbs">lbs</option>
+          <option value = "kg">kg</option>
+      </select>
       <button type ="button" onClick = {onButtonClick} className = 'border rounded shadow-md bg-indigo-500 text-white w-20 h-10'>Add</button>
     </div>
   )
