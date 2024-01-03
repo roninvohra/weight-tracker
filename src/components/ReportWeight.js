@@ -8,50 +8,65 @@ function ReportWeight() {
   const [weight, setWeight] = useState('');
   const [date, setDate] = useState(new Date());
   const [unit, setUnit] = useState ('lbs');
+  const [reportError, setReportError] = useState (null);
   const dispatch = useDispatch();
 
   let onButtonClick = async () => {
 
-    try {
-      console.log (date);
-      let postData = {
-        "weight": weight,
-        "date": date,
-        "unit": unit,
-      }
-      const response = await fetch('http://localhost:5050/logs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-      });
+    if (isNaN(+weight)){
+      setReportError ("Enter weight as a number.")
+    }
+    else if (Date.now() < date){
+      setReportError ("Date can not be in the future.");
+    }
+    else{
+      setReportError(null);
+      setWeight(parseFloat(weight));
+      try {
+        console.log (date);
+        let postData = {
+          "weight": weight,
+          "date": date,
+          "unit": unit,
+        } 
+        const  response = await fetch('http://localhost:5050/logs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postData),
+        });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const responseData = await response.json();
+        dispatch(triggerEffect());
+        console.log ("DISPATCHED");
+        console.log(responseData);
+      } catch (error) {
+        console.error('Error during POST request:', error);
       }
-      const responseData = await response.json();
-      dispatch(triggerEffect());
-      console.log ("DISPATCHED");
-      console.log(responseData);
-    } catch (error) {
-      console.error('Error during POST request:', error);
     }
   };
 
 
   return (
-    <div className='bg-amber-200 box-border p-4 border-4 ...'>
-      <span className='mr-10'>
-        Date: <DatePicker selected={date} showTimeSelect onChange={(date) => setDate(date) } />
-      </span>
-      <input onChange = {e => setWeight(e.target.value)} placeholder="Weight" className = 'mr-5 border rounded shadow-md w-20 h-10' type ="text" name = "weight" />  
-      <select id = "unit" onChange = {e => setUnit(e.target.value)}>
-          <option value = "lbs">lbs</option>
-          <option value = "kg">kg</option>
-      </select>
-      <button type ="button" onClick = {onButtonClick} className = 'border rounded shadow-md bg-indigo-500 text-white w-20 h-10'>Add</button>
-    </div>
+    <>
+      <div className='bg-amber-200 box-border p-4 border-4 ...'>
+        <span className='mr-10'>
+          Date: <DatePicker selected={date} showTimeSelect onChange={(date) => setDate(date) } />
+        </span>
+        <input onChange = {e => setWeight(e.target.value)} placeholder="Weight" className = 'mr-5 border rounded shadow-md w-20 h-10' type ="text" name = "weight" />  
+        <select id = "unit" onChange = {e => setUnit(e.target.value)}>
+            <option value = "lbs">lbs</option>
+            <option value = "kg">kg</option>
+        </select>
+        <button type ="button" onClick = {onButtonClick} className = 'border rounded shadow-md bg-indigo-500 text-white w-20 h-10'>Add</button>
+        {reportError && <div className = 'text-red-600'>{reportError}</div>}
+      </div>
+      
+    </>
   )
 }
 
