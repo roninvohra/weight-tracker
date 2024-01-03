@@ -1,5 +1,6 @@
 import ReportWeight from './components/ReportWeight';
 import ShowLogs from './components/ShowLogs';
+import LineChart from './components/LineChart';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { resetEffect } from './store/actions';
@@ -9,7 +10,8 @@ function App() {
   const effectTriggered = useSelector((state) => state.effectTriggered);
   const dispatch = useDispatch();
   const [tableData, setTableData] = useState ([]);
-
+  const [chartData, setChartData] = useState ([]);
+  const [loggedToday, setLoggedToday] = useState (false);
       
   const fetchData = async () => {
             
@@ -37,22 +39,16 @@ function App() {
         data = data.sort((a, b) => b.date - a.date);
         let chronologicalData = data.slice();
         chronologicalData.sort ((a,b)=> a.date-b.date);
-        /*
-        setChartData ({
-            labels: chronologicalData.map((item) => item.dateString),
-            datasets: [
-              {
-                label: "Weight",
-                data: chronologicalData.map((item) => item.weight),
-                fill: true,
-                backgroundColor: "rgba(75,192,192,0.2)",
-                borderColor: "rgba(75,192,192,1)"
-              }
-            ]
-          });
-          */
+      
+        setChartData (chronologicalData);
         
-          console.log ("Table data" ,tableData);
+        if (chronologicalData.length > 0){
+          let currentDate = new Date(Date.now());
+          if (chronologicalData[chronologicalData.length-1].date.toLocaleDateString() == currentDate.toLocaleDateString()){
+            setLoggedToday(true);
+            console.log ("SET TRUe");
+          }
+        }
 
         
     } catch (error) {
@@ -62,7 +58,6 @@ function App() {
     };
     
   useEffect(() => {
-        // Call the fetchData function when the component mounts
       if (effectTriggered){
         fetchData();
         dispatch(resetEffect());
@@ -73,18 +68,23 @@ function App() {
 
   return (
     <>
-      <h1 className="flex text-3xl font-bold underline justify-center">
+    <div className = "flex flex-col items-center">
+      <h1 className="text-3xl font-bold underline">
         Weight Tracker
       </h1>
-      <div className = "flex justify-center">
-        <ReportWeight />
+    
+      <ReportWeight />
+      {tableData.length > 0 ? (
+        <>  
+      {!loggedToday && <div> You haven't logged your weight today! </div> }
+      <ShowLogs tableData = {tableData}/>
+  
+      <div className = "w-1/2 h-full">
+        <LineChart chartData = {chartData}  />
       </div>
+      </>) : (<div>Start by logging your weight!</div>)}
 
-      
-        <div className = "flex justify-center">
-            <ShowLogs tableData = {tableData}/>
-        </div>
-
+      </div>
     </>
   )
 }

@@ -55,7 +55,7 @@ function ReportWeight() {
     <>
       <div className='bg-amber-200 box-border p-4 border-4 ...'>
         <span className='mr-10'>
-          Date: <DatePicker selected={date} showTimeSelect onChange={(date) => setDate(date) } />
+          Date: <DatePicker maxDate = {new Date (Date.now())} selected={date} onChange={(date) => setDate(date) } />
         </span>
         <input onChange = {e => setWeight(e.target.value)} placeholder="Weight" className = 'mr-5 border rounded shadow-md w-20 h-10' type ="text" name = "weight" />  
         <select id = "unit" onChange = {e => setUnit(e.target.value)}>
