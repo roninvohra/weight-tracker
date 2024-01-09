@@ -76,6 +76,7 @@ function App() {
       <ReportWeight />
       {tableData.length > 0 ? (
         <>  
+        
       {!loggedToday && <div> You haven't logged your weight today! </div> }
       <ShowLogs tableData = {tableData}/>
   
